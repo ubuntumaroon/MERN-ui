@@ -9,14 +9,19 @@ const app = express();
 app.use(express.static('public'));
 
 // setup proxy to api
-const apiProxyTarget = process.env.API_PROXY_TARGET;
-const UI_API_ENDPOINT = process.env.UI_API_ENDPOINT || 'http://localhost:3000/graphql';
-if (apiProxyTarget) {
-  app.use(UI_API_ENDPOINT, createProxyMiddleware({ target: apiProxyTarget }));
+const API_USE_PROXY = process.env.API_USE_PROXY === 'true';
+const API_HOST = process.env.API_HOST  || 'http://localhost:3000';
+const API_ENDPOINT = process.env.API_ENDPOINT || '/graphql';
+
+let api = API_ENDPOINT;
+if (API_USE_PROXY) {
+  app.use(API_ENDPOINT, createProxyMiddleware({ target: API_HOST }));
+} else {
+  api = API_HOST + API_ENDPOINT;
 }
 
 // send API env to front end
-const env = { UI_API_ENDPOINT };
+const env = { 'UI_API_ENDPOINT': api };
 app.get('/env.js', function(req, res) {
   res.send(`window.ENV = ${JSON.stringify(env)}`);
 });
