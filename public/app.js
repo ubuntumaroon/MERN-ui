@@ -8,7 +8,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 /* eslint "react/react-in-jsx-scope": "off" */
 
-/* globals React ReactDOM */
+/* globals React ReactDOM PropTypes */
 
 /* eslint "react/jsx-no-undef": "off" */
 
@@ -79,6 +79,10 @@ class IssueAdd extends React.Component {
   }
 
 }
+
+IssueAdd.propTypes = {
+  createIssue: PropTypes.func.isRequired
+};
 
 function graphqlFetch(_x) {
   return _graphqlFetch.apply(this, arguments);
