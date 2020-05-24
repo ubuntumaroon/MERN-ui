@@ -1,11 +1,10 @@
-/**
- * 
- */
+/* eslint-disable max-classes-per-file */
+/* eslint "react/react-in-jsx-scope": "off" */
+/* globals React ReactDOM */
+/* eslint "react/jsx-no-undef": "off" */
+/* eslint "no-alert": "off" */
 
-const sampleIssue = {
-  status: 'New', owner: 'SF', 
-  title: 'Optional date',
-}
+// eslint-disable-next-line react/prefer-stateless-function
 const dateRegex = new RegExp('^\\d\\d\\d\\d-\\d\\d-\\d\\d');
 function jsonDateReviver(key, value) {
   if (dateRegex.test(value)) return new Date(value);
@@ -20,24 +19,7 @@ function IssueFilter() {
   );
 }
 
-const counter = (function() {
-  let count = 0;
-  return {
-    increase: function() {
-      count++;
-    }, 
-    log: function(str) {
-      str = str || '';
-      console.log(str + count);
-    },
-    clear: function() {
-      count = 0;
-    }
-  }
-})();
-
-function IssueRow(props) {
-  const issue = props.issue;
+function IssueRow({ issue }) {
   return (
     <tr>
       <td>{issue.id}</td>
@@ -48,11 +30,11 @@ function IssueRow(props) {
       <td>{issue.due ? issue.due.toDateString() : ' '}</td>
       <td>{issue.title}</td>
     </tr>
-  )
+  );
 }
 
-function IssueTable(props) {
-  const issueRows = props.issues.map(issue => <IssueRow key={issue.id} issue={issue}/>);
+function IssueTable({ issues }) {
+  const issueRows = issues.map((issue) => <IssueRow key={issue.id} issue={issue} />);
   return (
     <table className="bordered-table">
       <thead>
@@ -74,7 +56,6 @@ function IssueTable(props) {
   );
 }
 
-
 class IssueAdd extends React.Component {
   constructor() {
     super();
@@ -85,13 +66,14 @@ class IssueAdd extends React.Component {
     e.preventDefault();
     const form = document.forms.issueAdd;
     const issue = {
-      owner: form.owner.value, 
+      owner: form.owner.value,
       title: form.title.value,
-      due: new Date(new Date().getTime() + 1000*60*60*24*10),
-    }
-    this.props.createIssue(issue);
-    form.owner.value = "";
-    form.title.value = "";
+      due: new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 10),
+    };
+    const { createIssue } = this.props;
+    createIssue(issue);
+    form.owner.value = '';
+    form.title.value = '';
   }
 
   render() {
@@ -99,7 +81,7 @@ class IssueAdd extends React.Component {
       <form name="issueAdd" onSubmit={this.handleSubmit}>
         <input type="text" name="owner" placeholder="Owner" />
         <input type="text" name="title" placeholder="Title" />
-        <button>Add</button>
+        <button type="submit">Add</button>
       </form>
     );
   }
@@ -110,7 +92,7 @@ async function graphqlFetch(query, variables = {}) {
     const response = await fetch(window.ENV.UI_API_ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ query, variables })
+      body: JSON.stringify({ query, variables }),
     });
 
     const body = await response.text();
@@ -118,7 +100,7 @@ async function graphqlFetch(query, variables = {}) {
 
     if (result.errors) {
       const error = result.errors[0];
-      if (error.extensions.code == 'BAD_USER_INPUT') {
+      if (error.extensions.code === 'BAD_USER_INPUT') {
         const details = error.extensions.exception.errors.join('\n ');
         alert(`${error.message}:\n ${details}`);
       }
@@ -127,13 +109,14 @@ async function graphqlFetch(query, variables = {}) {
     return result.data;
   } catch (e) {
     alert(`Error in sending data: ${e.message}`);
-  }  
+    return null;
+  }
 }
 
 class IssueList extends React.Component {
   constructor() {
     super();
-    this.state = {issues: []};
+    this.state = { issues: [] };
     this.createIssue = this.createIssue.bind(this);
   }
 
@@ -164,25 +147,24 @@ class IssueList extends React.Component {
 
     const data = await graphqlFetch(query);
     if (data) {
-      this.setState({issues: data.issueList});
+      this.setState({ issues: data.issueList });
     }
   }
 
   render() {
+    const { issues } = this.state;
     return (
-      <React.Fragment>
+      <>
         <h1>Issue Tracker</h1>
         <IssueFilter />
         <hr />
-        <IssueTable issues={this.state.issues}/>
+        <IssueTable issues={issues} />
         <hr />
-        <IssueAdd createIssue={this.createIssue}/>
-      </React.Fragment>
+        <IssueAdd createIssue={this.createIssue} />
+      </>
     );
   }
 }
 
-
 const element = <IssueList />;
 ReactDOM.render(element, document.getElementById('contents'));
-
