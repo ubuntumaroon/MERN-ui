@@ -1,3 +1,5 @@
+/* eslint-disable no-alert */
+
 const dateRegex = new RegExp('^\\d\\d\\d\\d-\\d\\d-\\d\\d');
 
 function jsonDateReviver(key, value) {
