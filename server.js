@@ -2,6 +2,7 @@
  * UI server
  */
 require('dotenv').config();
+const path = require('path');
 const express = require('express');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
@@ -47,6 +48,10 @@ app.get('/env.js', (_req, res) => {
   res.send(`window.ENV = ${JSON.stringify(env)}`);
 });
 
+// all other pages direct to index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve('public/index.html'));
+});
 
 const port = process.env.UI_SERVER_PORT || 8000;
 app.listen(port, () => {
