@@ -142,7 +142,7 @@ export default class IssueEdit extends React.Component {
             <tr>
               <td>Description:</td>
               <td>
-                <TextInput tag='textarea' rows={8} cols={50} name="description" value={description} onChange={this.onChange} key={id} />
+                <TextInput tag="textarea" rows={8} cols={50} name="description" value={description} onChange={this.onChange} key={id} />
               </td>
             </tr>
             <tr>
