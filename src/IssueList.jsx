@@ -48,7 +48,7 @@ export default class IssueList extends React.Component {
     }`;
 
     const { issues } = this.state;
-    const { location: { pathname, search}, history } = this.props;
+    const { location: { pathname, search }, history } = this.props;
     const { id } = issues[index];
     const data = await graphQLFetch(query, { id });
     if (data && data.issueDelete) {
