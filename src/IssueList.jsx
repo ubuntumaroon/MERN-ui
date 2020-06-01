@@ -1,6 +1,7 @@
 import React from 'react';
 import URLSearchParams from '@ungap/url-search-params';
 import { Route } from 'react-router-dom';
+import { Badge as Label } from 'react-bootstrap';
 
 import IssueFilter from './IssueFilter.jsx';
 import IssueTable from './IssueTable.jsx';
@@ -122,7 +123,7 @@ export default class IssueList extends React.Component {
     const { match } = this.props;
     return (
       <>
-        <h1>Issue Tracker</h1>
+        <h1><Label variant="primary">Issue Tracker</Label></h1>
         <IssueFilter />
         <hr />
         <IssueTable issues={issues} closeIssue={this.closeIssue} deleteIssue={this.deleteIssue} />

@@ -1,5 +1,7 @@
 import React from 'react';
 import { Link, NavLink, withRouter } from 'react-router-dom';
+import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
+import { FaTrash, FaTimes } from 'react-icons/fa';
 
 const IssueRow = withRouter(({
   issue,
@@ -9,6 +11,12 @@ const IssueRow = withRouter(({
   index,
 }) => {
   const selectLocation = { pathname: `/issues/${issue.id}`, search };
+  const closeTooltip = (
+    <Tooltip id="close-tooltip" placement="top">Close Issue</Tooltip>
+  );
+  const deleteTootip = (
+    <Tooltip id="delete-tooltip" placement="top">Delete Issue</Tooltip>
+  );
   return (
     <tr>
       <td>{issue.id}</td>
@@ -23,13 +31,17 @@ const IssueRow = withRouter(({
         {' | '}
         <NavLink to={selectLocation}>Select</NavLink>
         {' | '}
-        <button type="button" onClick={() => { closeIssue(index); }}>
-          Close
-        </button>
-        {' | '}
-        <button type="button" onClick={() => { deleteIssue(index); }}>
-          Delete
-        </button>
+        <OverlayTrigger delayShow={1000} overlay={closeTooltip}>
+          <Button size="sm" variant="outline-secondary" onClick={() => { closeIssue(index); }}>
+            <FaTimes />
+          </Button>
+        </OverlayTrigger>
+        {' '}
+        <OverlayTrigger delayShow={1000} overlay={deleteTootip}>
+          <Button size="sm" variant="outline-secondary" onClick={() => { deleteIssue(index); }}>
+            <FaTrash />
+          </Button>
+        </OverlayTrigger>
       </td>
     </tr>
   );
