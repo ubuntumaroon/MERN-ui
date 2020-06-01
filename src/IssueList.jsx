@@ -1,6 +1,7 @@
 import React from 'react';
 import URLSearchParams from '@ungap/url-search-params';
 import { Route } from 'react-router-dom';
+import { Card } from 'react-bootstrap';
 
 import IssueFilter from './IssueFilter.jsx';
 import IssueTable from './IssueTable.jsx';
@@ -122,7 +123,14 @@ export default class IssueList extends React.Component {
     const { match } = this.props;
     return (
       <>
-        <IssueFilter />
+        <Card>
+          <Card.Header>
+            <Card.Title>Filter</Card.Title>
+          </Card.Header>
+          <Card.Body>
+            <IssueFilter />
+          </Card.Body>
+        </Card>
         <hr />
         <IssueTable issues={issues} closeIssue={this.closeIssue} deleteIssue={this.deleteIssue} />
         <hr />

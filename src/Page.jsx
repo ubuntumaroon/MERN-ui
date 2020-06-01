@@ -56,10 +56,12 @@ function Footer() {
 
 export default function Page() {
   return (
-    <div>
+    <>
       <NavBar />
-      <Contents />
+      <div className="container-fluid">
+        <Contents />
+      </div>
       <Footer />
-    </div>
+    </>
   );
 }
