@@ -1,7 +1,10 @@
 import React from 'react';
-import { Link, NavLink, withRouter } from 'react-router-dom';
-import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
-import { FaTrash, FaTimes } from 'react-icons/fa';
+import { withRouter } from 'react-router-dom';
+import { LinkContainer } from 'react-router-bootstrap';
+import {
+  Button, Tooltip, OverlayTrigger, Table,
+} from 'react-bootstrap';
+import { FaTrash, FaTimes, FaEdit } from 'react-icons/fa';
 
 const IssueRow = withRouter(({
   issue,
@@ -11,13 +14,27 @@ const IssueRow = withRouter(({
   index,
 }) => {
   const selectLocation = { pathname: `/issues/${issue.id}`, search };
+  const editTooltip = (
+    <Tooltip id="close-tooltip" placement="top">Edit Issue</Tooltip>
+  );
   const closeTooltip = (
     <Tooltip id="close-tooltip" placement="top">Close Issue</Tooltip>
   );
   const deleteTootip = (
     <Tooltip id="delete-tooltip" placement="top">Delete Issue</Tooltip>
   );
-  return (
+
+  function onClose(e) {
+    e.preventDefault();
+    closeIssue(index);
+  }
+
+  function onDelete(e) {
+    e.preventDefault();
+    deleteIssue(index);
+  }
+
+  const tableRow = (
     <tr>
       <td>{issue.id}</td>
       <td>{issue.status}</td>
@@ -27,23 +44,33 @@ const IssueRow = withRouter(({
       <td>{issue.due ? issue.due.toDateString() : ' '}</td>
       <td>{issue.title}</td>
       <td>
-        <Link to={`/edit/${issue.id}`}>Edit</Link>
-        {' | '}
-        <NavLink to={selectLocation}>Select</NavLink>
-        {' | '}
+        <OverlayTrigger delayShow={1000} overlay={editTooltip}>
+          <LinkContainer to={`/edit/${issue.id}`}>
+            <Button size="sm" variant="outline-secondary">
+              <FaEdit />
+            </Button>
+          </LinkContainer>
+        </OverlayTrigger>
+        {' '}
         <OverlayTrigger delayShow={1000} overlay={closeTooltip}>
-          <Button size="sm" variant="outline-secondary" onClick={() => { closeIssue(index); }}>
+          <Button size="sm" variant="outline-secondary" onClick={onClose}>
             <FaTimes />
           </Button>
         </OverlayTrigger>
         {' '}
         <OverlayTrigger delayShow={1000} overlay={deleteTootip}>
-          <Button size="sm" variant="outline-secondary" onClick={() => { deleteIssue(index); }}>
+          <Button size="sm" variant="outline-secondary" onClick={onDelete}>
             <FaTrash />
           </Button>
         </OverlayTrigger>
       </td>
     </tr>
+  );
+
+  return (
+    <LinkContainer to={selectLocation}>
+      {tableRow}
+    </LinkContainer>
   );
 });
 
@@ -59,7 +86,7 @@ export default function IssueTable({ issues, closeIssue, deleteIssue }) {
     />
   ));
   return (
-    <table className="bordered-table">
+    <Table striped bordered hover responsive>
       <thead>
         <tr>
           <th>ID</th>
@@ -76,6 +103,6 @@ export default function IssueTable({ issues, closeIssue, deleteIssue }) {
       <tbody>
         {issueRows}
       </tbody>
-    </table>
+    </Table>
   );
 }
