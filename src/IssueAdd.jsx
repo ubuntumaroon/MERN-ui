@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Form, Button } from 'react-bootstrap';
 
 export default class IssueAdd extends React.Component {
   constructor() {
@@ -23,11 +24,17 @@ export default class IssueAdd extends React.Component {
 
   render() {
     return (
-      <form name="issueAdd" onSubmit={this.handleSubmit}>
-        <input type="text" name="owner" placeholder="Owner" />
-        <input type="text" name="title" placeholder="Title" />
-        <button type="submit">Add</button>
-      </form>
+      <Form className="form-inline" name="issueAdd" onSubmit={this.handleSubmit}>
+        <Form.Group className="col-auto">
+          <Form.Label className="mr-2">Owner</Form.Label>
+          <Form.Control type="text" name="owner" placeholder="Owner" />
+        </Form.Group>
+        <Form.Group className="col-auto">
+          <Form.Label className="mr-2">Title</Form.Label>
+          <Form.Control type="text" name="title" placeholder="Title" />
+        </Form.Group>
+        <Button type="submit">Add</Button>
+      </Form>
     );
   }
 }
