@@ -1,6 +1,8 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import { Button } from 'react-bootstrap';
+import {
+  Button, ButtonToolbar, Form, InputGroup,
+} from 'react-bootstrap';
 
 class IssueFilter extends React.Component {
   constructor({ location: { search } }) {
@@ -83,25 +85,28 @@ class IssueFilter extends React.Component {
     const { effortMin, effortMax } = this.state;
     return (
       <div>
-        Status:
-        {' '}
-        <select value={status} onChange={this.onChangeStatus}>
-          <option value="">(All)</option>
-          <option value="New">New</option>
-          <option value="Assigned">Assigned</option>
-          <option value="Fixed">Fixed</option>
-          <option value="Closed">Closed</option>
-        </select>
-        {' '}
-        Effort Between:
-        {' '}
-        <input size={5} value={effortMin} onChange={this.onChangeEffortMin} />
-        {' - '}
-        <input size={5} value={effortMax} onChange={this.onChangeEffortMax} />
-        {' '}
-        <Button variant="primary" onClick={this.applyFilter}>Apply</Button>
-        {' '}
-        <Button variant="secondary" onClick={this.showOriginalFilter} disabled={!changed}>Reset</Button>
+        <Form.Group>
+          <Form.Label>Status:</Form.Label>
+          <Form.Control as="select" value={status} onChange={this.onChangeStatus}>
+            <option value="">(All)</option>
+            <option value="New">New</option>
+            <option value="Assigned">Assigned</option>
+            <option value="Fixed">Fixed</option>
+            <option value="Closed">Closed</option>
+          </Form.Control>
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Effect Between:</Form.Label>
+          <InputGroup>
+            <Form.Control value={effortMin} onChange={this.onChangeEffortMin} />
+            <InputGroup.Text>-</InputGroup.Text>
+            <Form.Control value={effortMax} onChange={this.onChangeEffortMax} />
+          </InputGroup>
+        </Form.Group>
+        <ButtonToolbar>
+          <Button variant="primary" onClick={this.applyFilter}>Apply</Button>
+          <Button variant="secondary" onClick={this.showOriginalFilter} disabled={!changed}>Reset</Button>
+        </ButtonToolbar>
       </div>
     );
   }
