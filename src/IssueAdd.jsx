@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Form, Button, ButtonGroup } from 'react-bootstrap';
+import { Form, Button } from 'react-bootstrap';
 
 export default class IssueAdd extends React.Component {
   constructor() {
