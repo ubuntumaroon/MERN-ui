@@ -109,14 +109,6 @@ export default class IssueEdit extends React.Component {
     const { issue: { owner, effort, description } } = this.state;
     const { issue: { created, due } } = this.state;
     const { invalidFields } = this.state;
-    let validationMessage;
-    if (Object.keys(invalidFields).length !== 0) {
-      validationMessage = (
-        <div className="error">
-          Please valid the fileds!
-        </div>
-      );
-    }
 
     return (
       <Card>
@@ -124,7 +116,7 @@ export default class IssueEdit extends React.Component {
           <Card.Title>{`Editing issue: ${id}`}</Card.Title>
         </Card.Header>
         <Card.Body>
-          <Form onSubmit={this.handleSubmit}>
+          <Form noValidate onSubmit={this.handleSubmit}>
             <Form.Group as={Row}>
               <Form.Label column sm={3}>Created</Form.Label>
               <Col sm={9}>
@@ -158,6 +150,7 @@ export default class IssueEdit extends React.Component {
               <Form.Label column sm={3}>Due</Form.Label>
               <Col sm={9}>
                 <Form.Control as={DateInput} name="due" value={due} onChange={this.onChange} onValidityChange={this.onValidityChange} key={id} />
+                <Form.Control.Feedback type="invalid">Please input a valid date</Form.Control.Feedback>
               </Col>
             </Form.Group>
             <Form.Group as={Row}>
