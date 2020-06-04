@@ -15,6 +15,7 @@ export default class IssueEdit extends React.Component {
     this.state = {
       issue: {},
       invalidFields: {},
+      showingValidation: false,
     };
 
     this.loadData = this.loadData.bind(this);
@@ -22,6 +23,8 @@ export default class IssueEdit extends React.Component {
     this.onChange = this.onChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.onValidityChange = this.onValidityChange.bind(this);
+    this.dismissValidation = this.dismissValidation.bind(this);
+    this.showValidation = this.showValidation.bind(this);
   }
 
   componentDidMount() {
@@ -55,6 +58,7 @@ export default class IssueEdit extends React.Component {
 
   async handleSubmit(e) {
     e.preventDefault();
+    this.showValidation();
     const { issue, invalidFields } = this.state;
     // eslint-disable-next-line no-console
     if (Object.keys(invalidFields).length !== 0) return;
@@ -95,6 +99,14 @@ export default class IssueEdit extends React.Component {
     this.setState({ issue: data ? data.issue : {}, invalidFields: {} });
   }
 
+  showValidation() {
+    this.setState({ showingValidation: true });
+  }
+
+  dismissValidation() {
+    this.setState({ showingValidation: false });
+  }
+
   render() {
     const { issue: { id } } = this.state;
     const { match: { params: { id: propsId } } } = this.props;
@@ -108,7 +120,17 @@ export default class IssueEdit extends React.Component {
     const { issue: { title, status } } = this.state;
     const { issue: { owner, effort, description } } = this.state;
     const { issue: { created, due } } = this.state;
-    const { invalidFields } = this.state;
+
+    const { invalidFields, showingValidation } = this.state;
+    let validationMessage;
+    if (Object.keys(invalidFields).length !== 0 && showingValidation) {
+      validationMessage = (
+        <Alert variant="danger" dismissible onClose={this.dismissValidation}>
+          <Alert.Heading>Oh snap! You got an error!</Alert.Heading>
+          <p>Please check invalid field before submitting.</p>
+        </Alert>
+      );
+    }
 
     return (
       <Card>
@@ -117,6 +139,7 @@ export default class IssueEdit extends React.Component {
         </Card.Header>
         <Card.Body>
           <Form onSubmit={this.handleSubmit}>
+            {validationMessage}
             <Form.Group as={Row}>
               <Form.Label column sm={3}>Created</Form.Label>
               <Col sm={9}>
