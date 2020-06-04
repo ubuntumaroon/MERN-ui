@@ -1,7 +1,7 @@
 import React from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
 import {
-  Card, Form, Row, Col, ButtonToolbar, Button, ButtonGroup,
+  Card, Form, Row, Col, ButtonToolbar, Button, ButtonGroup, Alert,
 } from 'react-bootstrap';
 
 import graphQLFetch from './graphQLFetch.js';
@@ -116,7 +116,7 @@ export default class IssueEdit extends React.Component {
           <Card.Title>{`Editing issue: ${id}`}</Card.Title>
         </Card.Header>
         <Card.Body>
-          <Form noValidate onSubmit={this.handleSubmit}>
+          <Form onSubmit={this.handleSubmit}>
             <Form.Group as={Row}>
               <Form.Label column sm={3}>Created</Form.Label>
               <Col sm={9}>
@@ -146,7 +146,7 @@ export default class IssueEdit extends React.Component {
                 <Form.Control as={NumInput} name="effort" value={effort} onChange={this.onChange} key={id} />
               </Col>
             </Form.Group>
-            <Form.Group as={Row} validationState={invalidFields.due ? 'error' : null}>
+            <Form.Group as={Row}>
               <Form.Label column sm={3}>Due</Form.Label>
               <Col sm={9}>
                 <Form.Control as={DateInput} name="due" value={due} onChange={this.onChange} onValidityChange={this.onValidityChange} key={id} />
