@@ -1,4 +1,3 @@
-/* eslint-disable no-alert */
 
 const dateRegex = new RegExp('^\\d\\d\\d\\d-\\d\\d-\\d\\d');
 
@@ -7,7 +6,7 @@ function jsonDateReviver(key, value) {
   return value;
 }
 
-export default async function graphQLFetch(query, variables = {}) {
+export default async function graphQLFetch(query, variables = {}, showError = null) {
   try {
     const response = await fetch(window.ENV.UI_API_ENDPOINT, {
       method: 'POST',
@@ -22,13 +21,14 @@ export default async function graphQLFetch(query, variables = {}) {
       const error = result.errors[0];
       if (error.extensions.code === 'BAD_USER_INPUT') {
         const details = error.extensions.exception.errors.join('\n ');
-        alert(`${error.message}:\n ${details}`);
+        if (showError) showError(`${error.message}:\n ${details}`);
       }
+      if (showError) showError('Wow, something went wrong, please try again later');
     }
 
     return result.data;
   } catch (e) {
-    alert(`Error in sending data: ${e.message}`);
+    if (showError) showError(`Error in sending data: ${e.message}`);
     return null;
   }
 }
