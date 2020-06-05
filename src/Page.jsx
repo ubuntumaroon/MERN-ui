@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Navbar, Nav, NavDropdown,
+  Navbar, Nav, NavDropdown, Container,
 } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
@@ -31,7 +31,9 @@ function NavBar() {
           <Nav>
             <IssueAddNavItem />
             <NavDropdown title="More" id="user-dropdown">
-              <NavDropdown.Item>About</NavDropdown.Item>
+              <LinkContainer to="/about">
+                <NavDropdown.Item>About</NavDropdown.Item>
+              </LinkContainer>
             </NavDropdown>
           </Nav>
         </Navbar.Collapse>
@@ -54,9 +56,10 @@ export default function Page() {
   return (
     <>
       <NavBar />
-      <div className="container-fluid mt-2">
+      <Container fluid className="mt-3">
         <Contents />
-      </div>
+      </Container>
+      <hr />
       <Footer />
     </>
   );
