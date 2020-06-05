@@ -1,14 +1,18 @@
 /**
  * UI server
  */
-require('dotenv').config();
-const path = require('path');
-const express = require('express');
-const { createProxyMiddleware } = require('http-proxy-middleware');
+import dotenv from 'dotenv';
+import path from 'path';
+import express from 'express';
+import proxy from 'http-proxy-middleware';
+import SourceMapSupport from 'source-map-support';
 
-const render = require('./render.js');
+import render from './render.jsx';
 
 const app = express();
+
+SourceMapSupport.install();
+dotenv.config();
 
 const enableHMR = (process.env.ENABLE_HMR || 'true') === 'true';
 if (enableHMR && (process.env.NODE_ENV !== 'production')) {
@@ -20,7 +24,7 @@ if (enableHMR && (process.env.NODE_ENV !== 'production')) {
   const devMiddleware = require('webpack-dev-middleware');
   const hotMiddleware = require('webpack-hot-middleware');
 
-  const config = require('../webpack.config.js');
+  const config = require('../webpack.config.js')[0];
   config.entry.app.push('webpack-hot-middleware/client');
   config.plugins = config.plugins || [];
   config.plugins.push(new webpack.HotModuleReplacementPlugin());
@@ -39,7 +43,7 @@ const API_ENDPOINT = process.env.API_ENDPOINT || '/graphql';
 
 let api = API_ENDPOINT;
 if (API_USE_PROXY) {
-  app.use(API_ENDPOINT, createProxyMiddleware({ target: API_HOST }));
+  app.use(API_ENDPOINT, proxy({ target: API_HOST }));
 } else {
   api = API_HOST + API_ENDPOINT;
 }
