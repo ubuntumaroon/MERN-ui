@@ -5,7 +5,6 @@ import { Card } from 'react-bootstrap';
 
 import IssueFilter from './IssueFilter.jsx';
 import IssueTable from './IssueTable.jsx';
-import IssueAdd from './IssueAdd.jsx';
 import IssueDetail from './IssueDetails.jsx';
 import graphQLFetch from './graphQLFetch.js';
 import Toast from './Toast.jsx';
@@ -19,7 +18,7 @@ export default class IssueList extends React.Component {
       toastMessage: '',
       toastType: 'success',
     };
-    this.createIssue = this.createIssue.bind(this);
+
     this.closeIssue = this.closeIssue.bind(this);
     this.deleteIssue = this.deleteIssue.bind(this);
     // toast reminders
@@ -36,19 +35,6 @@ export default class IssueList extends React.Component {
     const { location: { search: prevSearch } } = prevProps;
     const { location: { search } } = this.props;
     if (prevSearch !== search) {
-      this.loadData();
-    }
-  }
-
-  async createIssue(issue) {
-    const query = `mutation issueAdd($issue: IssueInputs!) {
-      issueAdd(issue: $issue) {
-        id
-      }
-    }`;
-
-    const data = await graphQLFetch(query, { issue }, this.showError);
-    if (data) {
       this.loadData();
     }
   }
@@ -167,8 +153,6 @@ export default class IssueList extends React.Component {
           autohide
         />
         <IssueTable issues={issues} closeIssue={this.closeIssue} deleteIssue={this.deleteIssue} />
-        <hr />
-        <IssueAdd createIssue={this.createIssue} />
         <hr />
         <Route path={`${match.path}/:id`} component={IssueDetail} />
       </>

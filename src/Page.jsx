@@ -1,11 +1,11 @@
 import React from 'react';
 import {
-  Navbar, Nav, NavDropdown, Tooltip, OverlayTrigger,
+  Navbar, Nav, NavDropdown,
 } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
-import { FaPlus } from 'react-icons/fa';
 
 import Contents from './Contents.jsx';
+import IssueAddNavItem from './IssueAddNavItem.jsx';
 
 function NavBar() {
   return (
@@ -29,11 +29,7 @@ function NavBar() {
           </Nav>
 
           <Nav>
-            <Nav.Link>
-              <OverlayTrigger placement="left" delayShow={1000} overlay={<Tooltip id="create-issue">Create Issue</Tooltip>}>
-                <FaPlus />
-              </OverlayTrigger>
-            </Nav.Link>
+            <IssueAddNavItem />
             <NavDropdown title="More" id="user-dropdown">
               <NavDropdown.Item>About</NavDropdown.Item>
             </NavDropdown>
@@ -58,7 +54,7 @@ export default function Page() {
   return (
     <>
       <NavBar />
-      <div className="container-fluid">
+      <div className="container-fluid mt-2">
         <Contents />
       </div>
       <Footer />
