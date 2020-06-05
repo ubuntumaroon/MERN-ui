@@ -54,7 +54,9 @@ app.get('/env.js', (_req, res) => {
   res.send(`window.ENV = ${JSON.stringify(env)}`);
 });
 
-app.get('/about', render);
+app.get('/about', (req, res, next) => {
+  render(req, res, next);
+});
 
 // all other pages direct to index.html
 app.get('*', (req, res) => {
@@ -65,3 +67,7 @@ const port = process.env.UI_SERVER_PORT || 8000;
 app.listen(port, () => {
   console.log(`UI started on port ${port}`);
 });
+
+if (module.hot) {
+  module.hot.accept('./render.jsx');
+}
