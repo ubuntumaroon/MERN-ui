@@ -6,6 +6,8 @@ const path = require('path');
 const express = require('express');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
+const render = require('./render.js');
+
 const app = express();
 
 const enableHMR = (process.env.ENABLE_HMR || 'true') === 'true';
@@ -47,6 +49,8 @@ const env = { UI_API_ENDPOINT: api };
 app.get('/env.js', (_req, res) => {
   res.send(`window.ENV = ${JSON.stringify(env)}`);
 });
+
+app.get('/about', render);
 
 // all other pages direct to index.html
 app.get('*', (req, res) => {
