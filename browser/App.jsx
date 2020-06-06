@@ -12,7 +12,9 @@ const element = (
     <Page />
   </Router>
 );
-ReactDOM.render(element, document.getElementById('contents'));
+
+const renderMethod = module.hot ? ReactDOM.render : ReactDOM.hydrate;
+renderMethod(element, document.getElementById('contents'));
 
 /** HMR */
 if (module.hot) {
