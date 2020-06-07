@@ -38,6 +38,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "http-proxy-middleware": "^1.0.4",
+    "isomorphic-fetch": "^2.2.1",
     "jquery": "^3.5.1",
     "nodemon": "^2.0.4",
     "popper.js": "^1.16.1",
@@ -49,8 +50,7 @@
     "react-router-bootstrap": "^0.25.0",
     "react-router-dom": "^5.2.0",
     "regenerator-runtime": "^0.13.5",
-    "source-map-support": "^0.5.19",
-    "whatwg-fetch": "^3.0.0"
+    "source-map-support": "^0.5.19"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
