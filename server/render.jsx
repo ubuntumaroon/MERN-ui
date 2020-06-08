@@ -16,7 +16,7 @@ async function render(req, res) {
     </StaticRouter>
   );
   const body = ReactDomServer.renderToString(element);
-  res.send(template(body));
+  res.send(template(body, initialData));
 }
 
 export default render;
