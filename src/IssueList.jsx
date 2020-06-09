@@ -151,7 +151,7 @@ class IssueList extends React.Component {
             <Card.Title>Filter</Card.Title>
           </Card.Header>
           <Card.Body>
-            <IssueFilter />
+            <IssueFilter urlBase="/issues" />
           </Card.Body>
         </Card>
         <hr />
