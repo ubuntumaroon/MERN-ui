@@ -7,22 +7,14 @@ import {
 import { FaPlus } from 'react-icons/fa';
 
 import graphQLFetch from './graphQLFetch.js';
-import Toast from './Toast.jsx';
+import withToast from './withToast.jsx';
 
 class IssueAddNavItem extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      showing: false,
-      toastVisible: false,
-      toastMessage: '',
-      toastType: 'success',
-    };
+    this.state = { showing: false };
 
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.showSuccess = this.showSuccess.bind(this);
-    this.showError = this.showError.bind(this);
-    this.dismissToast = this.dismissToast.bind(this);
     this.showModal = this.showModal.bind(this);
     this.hideModal = this.hideModal.bind(this);
   }
@@ -33,18 +25,6 @@ class IssueAddNavItem extends React.Component {
 
   hideModal() {
     this.setState({ showing: false });
-  }
-
-  showSuccess(message) {
-    this.setState({ toastVisible: true, toastMessage: message, toastType: 'success' });
-  }
-
-  showError(message) {
-    this.setState({ toastVisible: true, toastMessage: message, toastType: 'warning' });
-  }
-
-  dismissToast() {
-    this.setState({ toastVisible: false });
   }
 
   async handleSubmit(e) {
@@ -63,27 +43,17 @@ class IssueAddNavItem extends React.Component {
     }`;
 
     this.hideModal();
-    const data = await graphQLFetch(query, { issue }, this.showError);
+    const { showError, showSuccess } = this.props;
+    const data = await graphQLFetch(query, { issue }, showError);
     if (data) {
       const { history } = this.props;
-      this.showSuccess('Issue added, please add more details');
+      showSuccess('Issue added, please add more details');
       history.push(`/edit/${data.issueAdd.id}`);
     }
   }
 
   render() {
     const { showing } = this.state;
-    const { toastVisible, toastType, toastMessage } = this.state;
-    const toast = (
-      <Toast
-        toastType={toastType}
-        toastMessage={toastMessage}
-        onClose={this.dismissToast}
-        show={toastVisible}
-        delay={6000}
-        autohide
-      />
-    );
     return (
       <>
         <Nav.Link onClick={this.showModal}>
@@ -119,10 +89,9 @@ class IssueAddNavItem extends React.Component {
             <Button variant="primary" onClick={this.handleSubmit}>Submit</Button>
           </Modal.Footer>
         </Modal>
-        {toast}
       </>
     );
   }
 }
 
-export default withRouter(IssueAddNavItem);
+export default withToast(withRouter(IssueAddNavItem));

@@ -8,10 +8,10 @@ import graphQLFetch from './graphQLFetch.js';
 import NumInput from './NumInput.jsx';
 import DateInput from './DateInput.jsx';
 import TextInput from './TextInput.jsx';
-import Toast from './Toast.jsx';
+import withToast from './withToast.jsx';
 import store from './store.js';
 
-export default class IssueEdit extends React.Component {
+class IssueEdit extends React.Component {
   static async fetchData(match, search, showError) {
     const query = `query issue($id: Int!) {
       issue(id: $id) {
@@ -32,9 +32,6 @@ export default class IssueEdit extends React.Component {
       issue,
       invalidFields: {},
       showingValidation: false,
-      toastVisible: false,
-      toastMessage: '',
-      toastType: 'success',
     };
 
     this.loadData = this.loadData.bind(this);
@@ -44,9 +41,6 @@ export default class IssueEdit extends React.Component {
     this.onValidityChange = this.onValidityChange.bind(this);
     this.dismissValidation = this.dismissValidation.bind(this);
     this.showValidation = this.showValidation.bind(this);
-    this.showSuccess = this.showSuccess.bind(this);
-    this.showError = this.showError.bind(this);
-    this.dismissToast = this.dismissToast.bind(this);
   }
 
   componentDidMount() {
@@ -83,9 +77,9 @@ export default class IssueEdit extends React.Component {
     e.preventDefault();
     this.showValidation();
     const { issue, invalidFields } = this.state;
-    // eslint-disable-next-line no-console
     if (Object.keys(invalidFields).length !== 0) return;
 
+    const { showSuccess, showError } = this.props;
     const query = `mutation issueUpdate(
       $id: Int!
       $changes: IssueUpdateInputs!
@@ -100,17 +94,17 @@ export default class IssueEdit extends React.Component {
     }`;
 
     const { id, created, ...changes } = issue;
-    const data = await graphQLFetch(query, { id, changes }, this.showError);
+    const data = await graphQLFetch(query, { id, changes }, showError);
     if (data) {
       this.setState({ issue: data.issueUpdate });
       // eslint-disable-next-line no-alert
-      this.showSuccess('issue updated!');
+      showSuccess('issue updated!');
     }
   }
 
   async loadData() {
-    const { match } = this.props;
-    const data = await IssueEdit.fetchData(match, null, this.showError);
+    const { match, showError } = this.props;
+    const data = await IssueEdit.fetchData(match, null, showError);
     this.setState({ issue: data ? data.issue : {}, invalidFields: {} });
   }
 
@@ -120,18 +114,6 @@ export default class IssueEdit extends React.Component {
 
   dismissValidation() {
     this.setState({ showingValidation: false });
-  }
-
-  showSuccess(message) {
-    this.setState({ toastVisible: true, toastMessage: message, toastType: 'success' });
-  }
-
-  showError(message) {
-    this.setState({ toastVisible: true, toastMessage: message, toastType: 'warning' });
-  }
-
-  dismissToast() {
-    this.setState({ toastVisible: false });
   }
 
   render() {
@@ -162,25 +144,11 @@ export default class IssueEdit extends React.Component {
       );
     }
 
-    // message toast
-    const { toastVisible, toastMessage, toastType } = this.state;
-    const toastDiv = (
-      <Toast
-        toastType={toastType}
-        toastMessage={toastMessage}
-        onClose={this.dismissToast}
-        show={toastVisible}
-        delay={6000}
-        autohide
-      />
-    );
-
     return (
       <Card>
         <Card.Header>
           <Card.Title>{`Editing issue: ${id}`}</Card.Title>
         </Card.Header>
-        {toastDiv}
         <Card.Body>
           <Form onSubmit={this.handleSubmit}>
             {validationMessage}
@@ -252,3 +220,8 @@ export default class IssueEdit extends React.Component {
     );
   }
 }
+
+const IssueEditWithToast = withToast(IssueEdit);
+IssueEditWithToast.fetchData = IssueEdit.fetchData;
+
+export default IssueEditWithToast;
