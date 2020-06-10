@@ -33,7 +33,7 @@ class IssueList extends React.Component {
       $hasSelection: Boolean!
       $selectedId: Int!
     ) {
-      issueList(
+      issues(
         status: $status
         effortMin: $effortMin
         effortMax: $effortMax
@@ -52,7 +52,7 @@ class IssueList extends React.Component {
 
   constructor() {
     super();
-    const issues = store.initialData ? store.initialData.issueList : null;
+    const issues = store.initialData ? store.initialData.issues : null;
     const selectedIssue = store.initialData ? store.initialData.issue : null;
     delete store.initialData;
     this.state = {
@@ -134,7 +134,7 @@ class IssueList extends React.Component {
 
     const data = await IssueList.fetchData(match, search, this.showError);
     if (data) {
-      this.setState({ issues: data.issueList, selectedIssue: data.issue });
+      this.setState({ issues: data.issues, selectedIssue: data.issue });
     }
   }
 

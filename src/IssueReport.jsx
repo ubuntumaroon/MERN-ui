@@ -18,7 +18,7 @@ class IssueReport extends React.Component {
     const effortMax = parseInt(params.get('effortMax'), 10);
     if (!Number.isNaN(effortMax)) vars.effortMax = effortMax;
 
-    const query = `query issueList(
+    const query = `query issueReport(
       $status: StatusType
       $effortMin: Int
       $effortMax: Int
@@ -88,7 +88,7 @@ class IssueReport extends React.Component {
           <Card.Header>
             <Card.Title>Filter</Card.Title>
           </Card.Header>
-          <Card.Body collapse>
+          <Card.Body>
             <IssueFilter urlBase="/report" />
           </Card.Body>
         </Card>
