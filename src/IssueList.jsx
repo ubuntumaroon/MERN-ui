@@ -1,6 +1,8 @@
 import React from 'react';
 import URLSearchParams from '@ungap/url-search-params';
-import { Card, Pagination } from 'react-bootstrap';
+import {
+  Card, Pagination, Container, Row,
+} from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
 import IssueFilter from './IssueFilter.jsx';
@@ -211,15 +213,17 @@ class IssueList extends React.Component {
         <hr />
         <IssueDetail issue={selectedIssue} />
 
-        <Pagination>
-          <PageLink params={params} page={prevSection}>
-            <Pagination.Item>{'<'}</Pagination.Item>
-          </PageLink>
-          {items}
-          <PageLink params={params} page={nextSection}>
-            <Pagination.Item>{'>'}</Pagination.Item>
-          </PageLink>
-        </Pagination>
+        <Row className="justify-content-md-center">
+          <Pagination>
+            <PageLink params={params} page={prevSection}>
+              <Pagination.Prev />
+            </PageLink>
+            {items}
+            <PageLink params={params} page={nextSection}>
+              <Pagination.Next />
+            </PageLink>
+          </Pagination>
+        </Row>
       </>
     );
   }
