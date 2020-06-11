@@ -1,7 +1,7 @@
 import React from 'react';
 import URLSearchParams from '@ungap/url-search-params';
 import {
-  Card, Pagination, Container, Row,
+  Card, Pagination, Row, Button,
 } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
@@ -92,6 +92,7 @@ class IssueList extends React.Component {
 
     this.closeIssue = this.closeIssue.bind(this);
     this.deleteIssue = this.deleteIssue.bind(this);
+    this.restoreIssue = this.restoreIssue.bind(this);
   }
 
   componentDidMount() {
@@ -128,10 +129,28 @@ class IssueList extends React.Component {
           history.push({ pathname: '/issues', search });
         }
         newList.splice(index, 1);
-        showSuccess(`Deleted issue ${id} successfully.`);
         return { issues: newList };
       });
+      const undoMessage = (
+        <span>
+          {`Deleted issue ${id} successfully.`}
+          <Button variant="link" onClick={() => this.restoreIssue(id)}>UnDo</Button>
+        </span>
+      );
+      showSuccess(undoMessage);
     } else {
+      this.loadData();
+    }
+  }
+
+  async restoreIssue(id) {
+    const query = `mutation issueRestore($id: Int!) {
+      issueRestore(id: $id)
+    }`;
+    const { showSuccess, showError } = this.props;
+    const data = await graphQLFetch(query, { id }, showError);
+    if (data) {
+      showSuccess(`Issue ${id} restored successfully!`);
       this.loadData();
     }
   }
