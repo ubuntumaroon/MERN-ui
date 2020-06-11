@@ -1,11 +1,12 @@
 import React from 'react';
 import {
-  Navbar, Nav, NavDropdown, Container,
+  Navbar, Nav, NavDropdown, Container, Form, Col,
 } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
 import Contents from './Contents.jsx';
 import IssueAddNavItem from './IssueAddNavItem.jsx';
+import Search from './Search.jsx';
 
 function NavBar() {
   return (
@@ -27,7 +28,9 @@ function NavBar() {
               <Nav.Link>Report</Nav.Link>
             </LinkContainer>
           </Nav>
-
+          <Col sm={5}>
+            <Search />
+          </Col>
           <Nav>
             <IssueAddNavItem />
             <NavDropdown title="More" id="user-dropdown">
