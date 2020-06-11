@@ -1,6 +1,7 @@
 import React from 'react';
 import URLSearchParams from '@ungap/url-search-params';
-import { Card } from 'react-bootstrap';
+import { Card, Pagination } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
 
 import IssueFilter from './IssueFilter.jsx';
 import IssueTable from './IssueTable.jsx';
@@ -8,6 +9,24 @@ import IssueDetail from './IssueDetails.jsx';
 import graphQLFetch from './graphQLFetch.js';
 import withToast from './withToast.jsx';
 import store from './store.js';
+
+// how many pagition shown
+const SECTION_SIZE = 5;
+
+function PageLink({
+  params, page, activePage, children,
+}) {
+  params.set('page', page);
+  if (page === 0) return React.cloneElement(children, { disabled: true });
+  return (
+    <LinkContainer
+      isActive={() => page === activePage}
+      to={{ search: `?${params.toString()}` }}
+    >
+      {children}
+    </LinkContainer>
+  );
+}
 
 class IssueList extends React.Component {
   static async fetchData(match, search, showError) {
@@ -26,20 +45,28 @@ class IssueList extends React.Component {
       vars.selectedId = idInt;
     }
 
+    let page = parseInt(params.get('page'), 10);
+    if (Number.isNaN(page)) page = 1;
+    vars.page = page;
+
     const query = `query issuelist(
       $status: StatusType
       $effortMin: Int
       $effortMax: Int
       $hasSelection: Boolean!
       $selectedId: Int!
+      $page: Int
     ) {
-      issues(
+      issueList(
         status: $status
         effortMin: $effortMin
         effortMax: $effortMax
+        page: $page
       ) {
-        _id id title status owner
-        created effort due
+        issues {
+          _id id title status owner created effort due
+        }
+        pages
       }
       issue(id: $selectedId) @include (if: $hasSelection) {
         id description
@@ -52,12 +79,13 @@ class IssueList extends React.Component {
 
   constructor() {
     super();
-    const issues = store.initialData ? store.initialData.issues : null;
-    const selectedIssue = store.initialData ? store.initialData.issue : null;
+    const initialData = store.initialData || { issueList: {} };
+    const { issueList: { issues, pages }, issue: selectedIssue } = initialData;
     delete store.initialData;
     this.state = {
       issues,
       selectedIssue,
+      pages,
     };
 
     this.closeIssue = this.closeIssue.bind(this);
@@ -134,13 +162,37 @@ class IssueList extends React.Component {
 
     const data = await IssueList.fetchData(match, search, this.showError);
     if (data) {
-      this.setState({ issues: data.issues, selectedIssue: data.issue });
+      const { issueList: { issues, pages }, issue: selectedIssue } = data;
+      this.setState({
+        issues,
+        selectedIssue,
+        pages,
+      });
     }
   }
 
   render() {
-    const { issues } = this.state;
-    const { selectedIssue } = this.state;
+    const { selectedIssue, pages, issues } = this.state;
+    const { location: { search } } = this.props;
+
+    const params = new URLSearchParams(search);
+    let page = parseInt(params.get('page'), 10);
+    if (Number.isNaN(page)) page = 1;
+
+    const startPage = Math.floor((page - 1) / SECTION_SIZE) * SECTION_SIZE + 1;
+    const endPage = startPage + SECTION_SIZE - 1;
+    const prevSection = startPage === 1 ? 0 : startPage - SECTION_SIZE;
+    const nextSection = endPage >= pages ? 0 : startPage + SECTION_SIZE;
+
+    const items = [];
+    for (let i = startPage; i <= Math.min(endPage, pages); i += 1) {
+      params.set('page', i);
+      items.push((
+        <PageLink key={i} params={params} activePage={page} page={i}>
+          <Pagination.Item>{i}</Pagination.Item>
+        </PageLink>
+      ));
+    }
 
     if (issues == null) return null;
 
@@ -158,6 +210,16 @@ class IssueList extends React.Component {
         <IssueTable issues={issues} closeIssue={this.closeIssue} deleteIssue={this.deleteIssue} />
         <hr />
         <IssueDetail issue={selectedIssue} />
+
+        <Pagination>
+          <PageLink params={params} page={prevSection}>
+            <Pagination.Item>{'<'}</Pagination.Item>
+          </PageLink>
+          {items}
+          <PageLink params={params} page={nextSection}>
+            <Pagination.Item>{'>'}</Pagination.Item>
+          </PageLink>
+        </Pagination>
       </>
     );
   }
