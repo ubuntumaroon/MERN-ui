@@ -3,7 +3,7 @@
  */
 import dotenv from 'dotenv';
 import express from 'express';
-import proxy from 'http-proxy-middleware';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 import SourceMapSupport from 'source-map-support';
 
 import render from './render.jsx';
@@ -37,11 +37,16 @@ app.use(express.static('public'));
 
 const apiProxyTarget = process.env.API_PROXY_TARGET;
 if (apiProxyTarget) {
-  app.use('/graphql', proxy({ target: apiProxyTarget }));
+  app.use('/graphql', createProxyMiddleware({ target: apiProxyTarget }));
+  app.use('/auth', createProxyMiddleware({ target: apiProxyTarget }));
 }
 
 if (!process.env.UI_API_ENDPOINT) {
   process.env.UI_API_ENDPOINT = 'http://localhost:3000/graphql';
+}
+
+if (!process.env.UI_AUTH_ENDPOINT) {
+  process.env.UI_AUTH_ENDPOINT = 'http://localhost:3000/auth';
 }
 
 if (!process.env.UI_SERVER_API_ENDPOINT) {
@@ -51,6 +56,7 @@ if (!process.env.UI_SERVER_API_ENDPOINT) {
 app.get('/env.js', (req, res) => {
   const env = {
     UI_API_ENDPOINT: process.env.UI_API_ENDPOINT,
+    UI_AUTH_ENDPOINT: process.env.UI_AUTH_ENDPOINT,
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
   };
   res.send(`window.ENV = ${JSON.stringify(env)}`);
