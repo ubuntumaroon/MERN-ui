@@ -9,7 +9,7 @@ import IssueAddNavItem from './IssueAddNavItem.jsx';
 import SignInNavItem from './SignInNavItem.jsx';
 import Search from './Search.jsx';
 
-function NavBar() {
+function NavBar({ user, onUserChange }) {
   return (
     <>
       <Navbar expand="md" bg="light" variant="light">
@@ -33,8 +33,8 @@ function NavBar() {
             <Search />
           </Col>
           <Nav>
-            <IssueAddNavItem />
-            <SignInNavItem />
+            <IssueAddNavItem user={user} />
+            <SignInNavItem user={user} onUserChange={onUserChange} />
             <NavDropdown title="More" id="user-dropdown">
               <LinkContainer to="/about">
                 <NavDropdown.Item>About</NavDropdown.Item>
@@ -57,15 +57,40 @@ function Footer() {
   );
 }
 
-export default function Page() {
-  return (
-    <>
-      <NavBar />
-      <Container fluid className="mt-3">
-        <Contents />
-      </Container>
-      <hr />
-      <Footer />
-    </>
-  );
+export default class Page extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { user: { signedIn: false } };
+
+    this.onUserChange = this.onUserChange.bind(this);
+  }
+
+  async componentDidMount() {
+    const apiEndpoint = window.ENV.UI_AUTH_ENDPOINT;
+    const response = await fetch(`${apiEndpoint}/user`, {
+      method: 'POST',
+    });
+
+    const body = await response.text();
+    const result = JSON.parse(body);
+    const { signedIn, givenName } = result;
+    this.setState({ user: { signedIn, givenName } });
+  }
+
+  onUserChange(user) {
+    this.setState({ user });
+  }
+
+  render() {
+    const { user } = this.state;
+    return (
+      <>
+        <NavBar user={user} onUserChange={this.onUserChange} />
+        <Container fluid className="mt-3">
+          <Contents />
+          <Footer />
+        </Container>
+      </>
+    );
+  }
 }

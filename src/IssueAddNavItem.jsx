@@ -54,9 +54,10 @@ class IssueAddNavItem extends React.Component {
 
   render() {
     const { showing } = this.state;
+    const { user: { signedIn } } = this.props;
     return (
       <>
-        <Nav.Link onClick={this.showModal}>
+        <Nav.Link disabled={!signedIn} onClick={this.showModal}>
           <OverlayTrigger placement="left" delayShow={1000} overlay={<Tooltip id="create-issue">Create Issue</Tooltip>}>
             <FaPlus />
           </OverlayTrigger>
