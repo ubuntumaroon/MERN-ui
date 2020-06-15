@@ -12,10 +12,10 @@ import UserContext from './UserContext.js';
 class IssueRowPlain extends React.Component {
   render() {
     const {
-      issue,location: { search }, closeIssue, deleteIssue, index,
+      issue, location: { search }, closeIssue, deleteIssue, index,
     } = this.props;
     const user = this.context;
-    const disabled =!user.signedIn;
+    const disabled = !user.signedIn;
 
     const selectLocation = { pathname: `/issues/${issue.id}`, search };
     const editTooltip = (
