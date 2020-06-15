@@ -10,6 +10,7 @@ import DateInput from './DateInput.jsx';
 import TextInput from './TextInput.jsx';
 import withToast from './withToast.jsx';
 import store from './store.js';
+import UserContext from './UserContext.js';
 
 class IssueEdit extends React.Component {
   static async fetchData(match, search, showError) {
@@ -144,6 +145,7 @@ class IssueEdit extends React.Component {
       );
     }
 
+    const user = this.context;
     return (
       <Card>
         <Card.Header>
@@ -204,7 +206,7 @@ class IssueEdit extends React.Component {
               <Col sm={{ span: 6, offset: 3 }}>
                 <ButtonToolbar>
                   <ButtonGroup className="mr-2">
-                    <Button type="submit">Submit</Button>
+                    <Button type="submit" disabled={!user.signedIn}>Submit</Button>
                   </ButtonGroup>
                   <ButtonGroup>
                     <LinkContainer to="/issues">
@@ -221,6 +223,7 @@ class IssueEdit extends React.Component {
   }
 }
 
+IssueEdit.contextType = UserContext;
 const IssueEditWithToast = withToast(IssueEdit);
 IssueEditWithToast.fetchData = IssueEdit.fetchData;
 

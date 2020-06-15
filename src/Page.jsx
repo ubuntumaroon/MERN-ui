@@ -8,6 +8,7 @@ import Contents from './Contents.jsx';
 import IssueAddNavItem from './IssueAddNavItem.jsx';
 import SignInNavItem from './SignInNavItem.jsx';
 import Search from './Search.jsx';
+import UserContext from './UserContext.js';
 
 function NavBar({ user, onUserChange }) {
   return (
@@ -87,7 +88,9 @@ export default class Page extends React.Component {
       <>
         <NavBar user={user} onUserChange={this.onUserChange} />
         <Container fluid className="mt-3">
-          <Contents />
+          <UserContext.Provider value={user}>
+            <Contents />
+          </UserContext.Provider>
           <Footer />
         </Container>
       </>
