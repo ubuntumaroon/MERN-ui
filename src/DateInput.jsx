@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 
 function displayFormat(date) {
   return (date != null) ? date.toDateString() : '';
@@ -54,7 +55,9 @@ export default class DateInput extends React.Component {
       value: origValue, onValidityChange, className: oldClassName, ...props
     } = this.props;
     const displayValue = (focused || !valid) ? value : displayFormat(origValue);
-    const className = `${oldClassName || ''} ${(!valid && !focused) ? 'is-invalid' : null}`;
+    const className = classNames(oldClassName, {
+      'is-invalid': !valid && !focused,
+    });
 
     return (
       <input
